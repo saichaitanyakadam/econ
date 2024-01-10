@@ -7,17 +7,15 @@ function App() {
   const [todos, setTodos] = useState([]);
   const [activeTab, setActiveTab] = useState(0);
   const [task, setTask] = useState("");
-  const [edited, setEdited] = useState(false);
+  const getTodods = async () => {
+    const { data } = await axios.get(
+      "https://economize-todo-backend.onrender.com/todos"
+    );
+    setTodos(data);
+  };
   useEffect(() => {
-    const getTodods = async () => {
-      setEdited(false);
-      const { data } = await axios.get(
-        "https://economize-todo-backend.onrender.com/todos"
-      );
-      setTodos(data);
-    };
     getTodods();
-  }, [edited]);
+  }, []);
   const handleChange = (e) => {
     setTask(e.target.value);
   };
@@ -29,7 +27,7 @@ function App() {
         status: false,
       });
       setTask("");
-      setEdited(true);
+      getTodods();
     } catch (error) {
       console.error(error);
     }
@@ -38,13 +36,13 @@ function App() {
     await axios.delete(
       `https://economize-todo-backend.onrender.com/todos/${todoId}`
     );
-    setEdited(true);
+    getTodods();
   };
   const handleEdit = async (todoId) => {
     await axios.put(
       `https://economize-todo-backend.onrender.com/todos/${todoId}`
     );
-    setEdited(true);
+    getTodods();
   };
 
   return (
